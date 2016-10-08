@@ -73,10 +73,10 @@ export BB_MODE='%s'
 export BB_URL='%s'
 
 # Get the runurl utility.
-wget -qO/usr/bin/runurl $BB_URL/runurl
+wget -qO/usr/bin/runurl ${BB_URL}runurl
 chmod 755 /usr/bin/runurl
 
-runurl $BB_URL/bb-bootstrap.sh
+runurl ${BB_URL}bb-bootstrap.sh
 """
 
     @staticmethod
@@ -106,10 +106,10 @@ runurl $BB_URL/bb-bootstrap.sh
             }
 
         if master in (None, ''):
-            master = "build.zfsonlinux.org:9989"
+            master = "build-dev.zfsonlinux.org:9989"
 
         if url in (None, ''):
-            url = "https://raw.githubusercontent.com/zfsonlinux/zfs-buildbot/master/scripts/" 
+            url = "http://build-dev.zfsonlinux.org/scripts/" 
 
         if password is None:
             password = ZFSEC2Slave.pass_generator()
@@ -158,5 +158,12 @@ class ZFSEC2PVTestSlave(ZFSEC2Slave):
 class ZFSEC2VectorTestSlave(ZFSEC2Slave):
     def __init__(self, name, **kwargs):
         ZFSEC2Slave.__init__(self, name, build_wait_timeout=1, mode="TEST",
+            instance_type="d2.xlarge", max_spot_price=0.30, placement='a',
+            spot_instance=True, **kwargs)
+
+# Create a d2.xlarge slave for performance testing because they have disks
+class ZFSEC2PerfTestSlave(ZFSEC2Slave):
+    def __init__(self, name, **kwargs):
+        ZFSEC2Slave.__init__(self, name, build_wait_timeout=1, mode="PERF",
             instance_type="d2.xlarge", max_spot_price=0.30, placement='a',
             spot_instance=True, **kwargs)

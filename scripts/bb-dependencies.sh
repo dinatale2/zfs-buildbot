@@ -196,6 +196,9 @@ SUSE*)
     ;;
 
 Ubuntu*)
+    export TERMINFO=/usr/share/terminfo/
+    export TERM=dumb
+
     # Required development tools.
     apt-get-install build-essential autoconf libtool gdb lcov
 
